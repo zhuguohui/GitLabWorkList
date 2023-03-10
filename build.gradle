@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.trs.app'
+version '1.0'
+
+jar {
+    //详细信息参考 https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Jar.html
+    archivesBaseName = 'GitLabLog'//基本的文件名
+    archiveVersion = '0.0.1' //版本
+    manifest { //配置jar文件的manifest
+        attributes(
+                "Manifest-Version": 1.0,
+                'Main-Class': 'org.example.Main' //指定main方法所在的文件
+        )
+    }
+    //打包依赖包
+    from {
+        (configurations.runtimeClasspath).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/central' }
+    maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+    mavenCentral()
+
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10.1' //gson d
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'//okHttp
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.3'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+}
+
+test {
+    useJUnitPlatform()
+}
