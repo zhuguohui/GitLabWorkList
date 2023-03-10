@@ -14,20 +14,41 @@
 ![p2.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c6323380dec54aebbb4ce8ba0127191d~tplv-k3u1fbpfcp-watermark.image?)
 
 # 使用方式
+
+## 1.获取个人令牌
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6203bbe161f04a51bb4f7222b6ba98cc~tplv-k3u1fbpfcp-watermark.image?)
+
+## 2.双击运行
 **使用java8 编译。如果运行不了，可能是java版本的问题。**
 
 很简单，我发布成一个jar包了。直接双击运行就行了。
 
 [下载地址](https://github.com/zhuguohui/GitLabWorkList/blob/master/product/GitLabLog-0.0.1.jar)
 
-每次都输入地址和token很麻烦，还支持通过命令行输入。到时候写个批处理文件就行了。
+## 3.使用批处理 避免每次都要输入信息
 
+每次都输入地址和token很麻烦，还支持通过命令行输入参数。
 
+只支持三个参数
+
+| 参数名 |内容  |
+| --- | --- |
+| -url | gitlab 地址 |
+| -name| 用户名|
+|-token| 访问令牌|
+
+示例代码如下
 ```js
 java -jar GitLabLog-0.0.1.jar -url https://git.abc.cn -token 123456 -name zhan.shang
 ```
 
 # 更多扩展
-项目已经开源了，大家可以安装自己的需要
+项目已经开源了，大家可以按照自己的需要进行扩展。
+</br>
+使用的技术是 
+**okhttp retorfit rxjava gson java swing**
+
+## github 地址
 
 [GitLabWorkList](https://github.com/zhuguohui/GitLabWorkList)
