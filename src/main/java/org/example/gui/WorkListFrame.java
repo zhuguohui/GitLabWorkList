@@ -110,6 +110,7 @@ public class WorkListFrame extends JFrame {
                         String workListInfo = workListParser.getWorkListInfo(runTime, bean, list);
                         textArea.setText(workListInfo);
                     }, e -> {
+                        e.printStackTrace();
                         String s = "请求失败:" + e.getMessage();
                         textArea.setText(s);
                     });

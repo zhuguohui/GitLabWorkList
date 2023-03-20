@@ -54,10 +54,13 @@ public class WorkListDefaultParser implements IWorkListParser {
         for(WorkInfo info:eventInfoList){
             ProjectInfo projectInfo = info.getProjectInfo();
             Map<String, List<String>> fzMap = eventMap.computeIfAbsent(projectInfo, projectInfo1 -> new HashMap<>());
-            String ref = info.getPushData().getRef();
-            String title = info.getPushData().getCommitTitle();
-            List<String> list = fzMap.computeIfAbsent(ref, k -> new ArrayList<>());
-            list.add(title);
+            if(info.getPushData()!=null) {
+                String ref = info.getPushData().getRef();
+                ref = ref == null ? "null" : ref;
+                String title = info.getPushData().getCommitTitle();
+                List<String> list = fzMap.computeIfAbsent(ref, k -> new ArrayList<>());
+                list.add(title);
+            }
         }
         return eventMap;
     }

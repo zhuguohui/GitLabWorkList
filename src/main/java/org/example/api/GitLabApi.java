@@ -1,6 +1,8 @@
 package org.example.api;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import org.example.bean.WorkInfo;
@@ -16,6 +18,7 @@ import retrofit2.http.Query;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -41,12 +44,13 @@ public interface GitLabApi {
      * @param token 令牌
      * @param userId 用户id
      * @param pageSize 分页大小
+     * @param pageIndex 分页index 从1开始
      * @param startDate 开始时间
      * @param endDate 结束时间
      * @return
      */
     @GET("/api/v4/users/{userId}/events")
-    Observable<List<WorkInfo>> getUserEvents(@Header("PRIVATE-TOKEN")String token, @Path("userId")int userId, @Query("per_page") int pageSize, @Query("after") String startDate, @Query("before") String endDate);
+    Observable<List<WorkInfo>> getUserEvents(@Header("PRIVATE-TOKEN")String token, @Path("userId")int userId, @Query("per_page") int pageSize,@Query("page") int pageIndex, @Query("after") String startDate, @Query("before") String endDate);
 
     /**
      * 获取项目信息
@@ -102,10 +106,52 @@ public interface GitLabApi {
                     }
                 })
                 .map(UserInfo::getId)
-                .flatMap(id->{
-                    return holder.instance.getUserEvents(bean.token,id,300, finalStatTime, finalEndTime);
-                })
+                .flatMap(id-> getUserEventsForPage(bean.token,id,finalStatTime,finalEndTime))
                 .compose(new ProjectTransform(holder.instance,bean.token))
                 .subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 通过分页的方式获取所有的用户事件
+     * @return
+     */
+    static   Observable<List<WorkInfo>> getUserEventsForPage(String token,int userId,String startTime,String endTime){
+        return Observable.create(new ObservableOnSubscribe<List<WorkInfo>>() {
+          final   Object lock=new Object();
+            boolean haveMore=true;
+            boolean errorOccurred=false;
+            Throwable throwable=null;
+            @Override
+            public void subscribe(ObservableEmitter<List<WorkInfo>> emitter) throws Exception {
+                int pageIndex=1;
+                int perPageSize=100;
+                List<WorkInfo> workInfos=new ArrayList<>(0);
+                while (haveMore&&!emitter.isDisposed()) {
+                    System.out.println("获取用户事件 pageIndex="+pageIndex);
+                    holder.instance.getUserEvents(token, userId, perPageSize, pageIndex, startTime, endTime)
+                            .subscribe(list->{
+                                if(list.size()<perPageSize){
+                                    haveMore=false;
+                                }
+                                workInfos.addAll(list);
+
+                            },e->{
+                                throwable=e;
+                                errorOccurred=true;
+                                haveMore=false;
+
+                            });
+
+                    pageIndex++;
+                }
+               if(!errorOccurred){
+                   emitter.onNext(workInfos);
+                   emitter.onComplete();
+               }else{
+                   emitter.onError(throwable);
+               }
+            }
+        });
+
     }
 }

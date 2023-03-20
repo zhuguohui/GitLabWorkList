@@ -31,7 +31,7 @@ public class ProjectTransform implements ObservableTransformer<List<WorkInfo>,Li
                   return   Observable.fromIterable(projectIdSet)
                             .flatMap(this::getProjectInfo)
                             .toList()
-                             .toObservable()
+                            .toObservable()
                             .map(projectInfos -> {
                                 HashMap<Integer, ProjectInfo> map = new HashMap<>();
                                 for(ProjectInfo info:projectInfos){
