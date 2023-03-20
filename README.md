@@ -3,6 +3,10 @@
 特别写了一个工具。可以查询GitLab中自己一段时间内的所有提交记录。
 按照项目和分支进行排序
 
+# 2.0发布
+支持分页，之前只差一周的，懒得写分页，一页100条。这次升级以后可以查一年的记录。
+为什么升级这个功能，因为要写年终总结了。
+
 # 效果
 
 
@@ -24,7 +28,7 @@
 
 很简单，我发布成一个jar包了。直接双击运行就行了。
 
-[下载地址](https://github.com/zhuguohui/GitLabWorkList/blob/master/product/GitLabLog-0.0.1.jar)
+[下载地址](https://github.com/zhuguohui/GitLabWorkList/blob/master/product/GitLabLog-2.0.jar)
 
 ## 3.使用批处理 避免每次都要输入信息
 
@@ -40,7 +44,7 @@
 
 示例代码如下
 ```js
-java -jar GitLabLog-0.0.1.jar -url https://git.abc.cn -token 123456 -name zhan.shang
+java -jar GitLabLog-2.0.jar -url https://git.abc.cn -token 123456 -name zhan.shang
 ```
 
 # 更多扩展
